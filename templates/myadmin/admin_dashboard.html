@@ -1,0 +1,115 @@
+{% extends "myadmin/admin_base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <!-- Dashboard Stats -->
+        <div class="col-sm-4 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Categories</p>
+                    <h6 class="mb-0">{{ category }}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Products</p>
+                    <h6 class="mb-0">{{ product }}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-users fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Users</p>
+                    <h6 class="mb-0">{{ customuser }}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-shopping-cart fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Orders</p>
+                    <h6 class="mb-0">{{ order }}</h6>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Data -->
+        <div class="col-sm-4 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-money-check-alt fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total COD Revenue</p>
+                    <h6 class="mb-0">{{ total_revenue_cod }}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-credit-card fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Stripe Revenue</p>
+                    <h6 class="mb-0">{{ total_revenue_stripe }}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-coins fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Revenue</p>
+                    <h6 class="mb-0">{{ total_revenue }}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Chart -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-12">
+            <div class="bg-secondary text-center rounded p-4">
+                <h6 class="mb-0">Total Revenue by Payment Method</h6>
+                <canvas id="sales-revenue-chart"></canvas> <!-- Updated canvas ID here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const revenueData = JSON.parse('{{ revenue_data|safe }}');
+        const ctx = document.getElementById('sales-revenue-chart').getContext('2d');  // Updated selector to match canvas ID
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['COD', 'Stripe'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [revenueData.COD, revenueData.Stripe],
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)'],
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}
